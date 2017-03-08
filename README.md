@@ -10,6 +10,8 @@ CSS slide transitions for [bespoke.js](https://github.com/markdalgleish/bespoke.
 
 修改silde事件中的BUG
 
+修复demo，使得demo能正常运行。
+
 ## Download
 
 Download the [production version][min] or the [development version][max], or use a [package manager](#package-managers).
