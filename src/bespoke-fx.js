@@ -3,6 +3,7 @@ var bespokeFx = function(options){
 
   BespokeFx = {
     init: function(deck, options) {
+      var self = this;
       this.deck = deck;
       this.direction = options.direction ? options.direction : "horizontal";
       this.default_axis = this.getAxisFromDirection(this.direction);
@@ -18,7 +19,7 @@ var bespokeFx = function(options){
       deck.on('activate',this.activate.bind(this));
 
 			deck.slides.map(function(slide) {
-				addClass(slide, preClass+'slide');
+				self.addClassNames(slide, 'bespoke-slide');
 			});
     },
     
@@ -716,6 +717,27 @@ var bespokeFx = function(options){
         element.classList.remove(names[i]);
       }
     },
+
+    deactivate : function(slide, index) {
+      var slides = this.deck.slides;
+      var pre = 'bespoke-';
+      var activeSlide = slides[(this.curSlideInde || 0)];
+        var offset = index - (this.curSlideInde || 0),
+          offsetClass = offset > 0 ? 'after' : 'before';
+
+        [pre+'before(-\\d+)?', pre+'after(-\\d+)?', pre+'active', pre+'inactive'].map(this.removeClassNames.bind(0, slide));
+
+        slide != activeSlide &&
+          [pre+'inactive', pre+offsetClass, pre+offsetClass + '-' + Math.abs(offset)].map(this.addClassNames.bind(0, slide));
+    },
+
+    activate : function(event){
+        var activeSlide = event.slide;
+        this.deck.slides.map(this.deactivate.bind(this) );
+        this.addClassNames(activeSlide, 'bespoke-active');
+				this.removeClassNames(activeSlide, 'bespoke-inactive');
+        
+    },
     
     prev: function(event) {
       if(event.index > 0 && !event.transition_complete) {
@@ -737,7 +759,7 @@ var bespokeFx = function(options){
     
     slide: function(event) {
       if(event.slide) {
-        var outSlideIndex = this.deck.slide();
+        var outSlideIndex = this.curSlideInde || 0;
         var outSlide = this.deck.slides[outSlideIndex];
         var inSlideIndex = event.index;
         var inSlide = event.slide;
@@ -745,12 +767,6 @@ var bespokeFx = function(options){
         
         this.doTransition(outSlide, inSlide, direction);
       }
-    },
-
-    activate : function(event){
-        var activeSlide = event.slide;
-        this.addClassNames(activeSlide, 'bespoke-active');
-				this.removeClassNames(activeSlide, 'bespoke-inactive');
     },
     
     doTransition: function(outSlide, inSlide, directive) { // RUN TRANSITIONS ON SLIDES
@@ -779,6 +795,7 @@ var bespokeFx = function(options){
       
       this.addClassNames(outSlide, outClass + " fx-transitioning-out");
       this.addClassNames(inSlide, inClass + " fx-transitioning-in");
+      this.curSlideInde = this.deck.slides.indexOf(inSlide);
     }
   };
 
