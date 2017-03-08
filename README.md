@@ -4,6 +4,12 @@
 
 CSS slide transitions for [bespoke.js](https://github.com/markdalgleish/bespoke.js)
 
+## 更新说明
+
+更新插件使其与bespoke.js v1.1.0相匹配。
+
+修改silde事件中的BUG
+
 ## Download
 
 Download the [production version][min] or the [development version][max], or use a [package manager](#package-managers).
